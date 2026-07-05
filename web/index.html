@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tạo video short — AI cắt clip tự động</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="dot"></span> tạo video short</div>
+    <div class="tag">AI cắt clip ngắn từ video dài · chạy local</div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <h1>Dán 1 link video dài → nhận clip ngắn có phụ đề</h1>
+      <p class="sub">AI bóc lời, chọn đoạn hay, cắt clip dọc 9:16 và tự tạo phụ đề. Tất cả chạy trên máy bạn.</p>
+
+      <form id="form" class="form">
+        <label class="field full">
+          <span>Link video (YouTube…)</span>
+          <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+        </label>
+
+        <label class="field full">
+          <span>… hoặc chọn video từ máy (không cần link)</span>
+          <input id="file" type="file" accept="video/*" />
+        </label>
+
+        <label class="field full">
+          <span>📁 Video TO (&gt;500MB)? Dán ĐƯỜNG DẪN file vào đây (đọc thẳng, khỏi upload)</span>
+          <input id="filepath" type="text" placeholder="C:\Users\Dhrev\Downloads\video.mp4" />
+        </label>
+
+        <div class="brand-row full">
+          <label class="field">
+            <span>🏷️ Logo — tuỳ chọn (ảnh PNG nền trong đẹp nhất)</span>
+            <input id="logo" type="file" accept="image/*" />
+          </label>
+          <label class="field">
+            <span>🎵 Nhạc nền — tuỳ chọn (mp3/wav)</span>
+            <input id="music" type="file" accept="audio/*" />
+          </label>
+        </div>
+
+        <label class="field full check">
+          <input id="reframe" type="checkbox" checked />
+          <span>🧑 Bám mặt người nói (khung 9:16 tự bám mặt; bỏ tick = nền mờ)</span>
+        </label>
+
+        <label class="field full">
+          <span>🧑‍🦱 Ảnh mặt người cần bám (tuỳ chọn) — up 1 ảnh rõ mặt → chỉ bám ĐÚNG người này</span>
+          <input id="reface" type="file" accept="image/*" />
+        </label>
+
+        <label class="field full check">
+          <input id="useai" type="checkbox" checked />
+          <span>🤖 Dùng AI (Ollama) đọc &amp; chọn đoạn hay — thông minh hơn luật</span>
+        </label>
+
+        <label class="field full">
+          <span>🎯 Mô tả bằng lời — AI cắt theo đây (chủ đề, SỐ CLIP, ĐỘ DÀI… ghi hết vào đây)</span>
+          <textarea id="keywords" rows="3" placeholder="vd: cắt 5 clip về bán hàng, mỗi clip 30-60 giây, ưu tiên đoạn có ví dụ thực tế và câu chốt mạnh"></textarea>
+        </label>
+
+        <label class="field full">
+          <span>⏱️ Chỉ xử lý mấy phút đầu? (0 = cả video — video dài nên đặt 10–15 để ra clip nhanh)</span>
+          <input id="maxmin" type="number" min="0" max="600" value="0" />
+        </label>
+
+        <label class="field full check">
+          <input id="repeat" type="checkbox" checked />
+          <span>🔁 Ưu tiên đoạn có từ/câu lặp lại (người nói nhấn mạnh)</span>
+        </label>
+
+        <label class="field">
+          <span>Ngôn ngữ</span>
+          <select id="lang">
+            <option value="">Tự động nhận diện</option>
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">Tiếng Anh</option>
+          </select>
+        </label>
+
+        <button id="go" type="submit" class="btn">Bắt đầu cắt</button>
+      </form>
+
+      <div id="progress" class="progress hidden">
+        <div class="bar"><div id="barfill" class="barfill"></div></div>
+        <p id="status" class="status">Đang chuẩn bị…</p>
+      </div>
+
+      <div id="error" class="error hidden"></div>
+    </section>
+
+    <section id="results" class="results hidden">
+      <h2 id="results-title">Kết quả</h2>
+      <div id="grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="foot">tao_video_short · bản MVP · phần lõi: tải → bóc lời → chấm điểm → cắt clip</footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

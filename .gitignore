@@ -1,0 +1,12 @@
+# Môi trường ảo & cache Python
+.venv/
+__pycache__/
+*.pyc
+
+# File tạm & kết quả (không đưa lên git)
+work/
+output/
+models/
+
+# Bí mật
+.env

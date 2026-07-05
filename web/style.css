@@ -1,0 +1,100 @@
+/* Giao diện tạo video short — tối giản, tông "bàn dựng phim" tối + nhấn vàng. */
+:root {
+  --bg: #14151b; --panel: #1c1e27; --panel2: #23252f;
+  --line: #2e313c; --text: #ececf0; --muted: #9a9db0;
+  --gold: #ebb04a; --gold-d: #c9871b; --good: #4caf7d; --bad: #e06a56;
+  --sans: -apple-system, "Segoe UI", system-ui, Roboto, sans-serif;
+  --mono: "Cascadia Code", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--sans); line-height: 1.55; }
+
+.topbar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 14px 24px; border-bottom: 1px solid var(--line); background: #101117; }
+.brand { font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: 9px; }
+.brand .dot { width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+.tag { color: var(--muted); font-size: .84rem; font-family: var(--mono); }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
+
+.panel { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 16px; padding: clamp(20px, 4vw, 36px); }
+h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -.02em; text-wrap: balance; }
+.sub { color: var(--muted); margin: 10px 0 24px; max-width: 60ch; }
+
+.form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: end; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.full { grid-column: 1 / -1; }
+.field span { font-size: .8rem; color: var(--muted); }
+.field input, .field select, .field textarea { background: var(--panel2); color: var(--text);
+  border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px;
+  font-size: .95rem; font-family: var(--sans); }
+.field textarea { resize: vertical; min-height: 48px; line-height: 1.5; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--gold); border-color: var(--gold); }
+
+.btn { background: var(--gold); color: #241a05; border: 0; border-radius: 9px;
+  padding: 12px 22px; font-weight: 700; font-size: .95rem; cursor: pointer;
+  white-space: nowrap; transition: filter .15s, transform .05s; }
+.btn:hover { filter: brightness(1.07); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.progress { margin-top: 24px; }
+.bar { height: 10px; background: var(--panel2); border-radius: 20px; overflow: hidden; }
+.barfill { height: 100%; width: 0%; border-radius: 20px;
+  background: linear-gradient(90deg, var(--gold-d), var(--gold)); transition: width .4s ease; }
+.status { margin: 10px 0 0; font-family: var(--mono); font-size: .84rem; color: var(--muted); }
+
+.error { margin-top: 20px; background: #2a1a19; border: 1px solid #5a2f2a;
+  color: #f0b8ae; border-radius: 10px; padding: 14px 16px; white-space: pre-wrap;
+  font-size: .88rem; }
+
+.results { margin-top: 34px; }
+.results h2 { font-size: 1.15rem; margin: 0 0 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+
+.card { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+.card video { width: 100%; aspect-ratio: 9 / 16; background: #000; display: block; }
+.card .meta { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.card .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.card .idx { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+.card .score { font-family: var(--mono); font-weight: 700; color: var(--gold);
+  background: #2a2410; border: 1px solid #4a3d14; border-radius: 20px; padding: 2px 9px; font-size: .74rem; }
+.card .reasons { display: flex; flex-wrap: wrap; gap: 5px; }
+.card .chip { font-size: .68rem; color: var(--muted); background: var(--panel2);
+  border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+.card .txt { font-size: .8rem; color: #c7c9d4; max-height: 4.6em; overflow: hidden; }
+.card .title { font-weight: 700; font-size: .9rem; line-height: 1.35; color: var(--text); }
+.card .tags { font-size: .76rem; color: var(--gold); font-family: var(--mono); word-break: break-word; }
+.card .range { font-family: var(--mono); font-size: .74rem; color: var(--muted); }
+.card.is-hook { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+.card.is-hook .idx { color: var(--gold); font-weight: 700; }
+.card .actions { display: flex; gap: 8px; padding: 2px 14px 14px; }
+.card .actions .dl, .card .actions .copy { flex: 1; text-align: center; border-radius: 8px;
+  font-weight: 700; font-size: .8rem; padding: 9px; cursor: pointer; border: 0; margin: 0;
+  text-decoration: none; font-family: var(--sans); }
+.card .actions .dl { background: var(--gold); color: #241a05; }
+.card .actions .copy { background: var(--panel2); color: var(--text); border: 1px solid var(--line); }
+.card .actions .dl:hover, .card .actions .copy:hover { filter: brightness(1.1); }
+.brand-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field.check { flex-direction: row; align-items: center; gap: 10px; }
+.field.check input { width: 18px; height: 18px; accent-color: var(--gold); }
+.hooks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.hooks label { display: flex; align-items: center; gap: 6px; font-size: .86rem;
+  background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 11px; cursor: pointer; }
+.hooks input { width: 16px; height: 16px; accent-color: var(--gold); }
+.range-row { display: flex; align-items: center; gap: 10px; }
+.range-row input { flex: 1; }
+.range-row .dash { color: var(--muted); }
+
+.foot { text-align: center; color: var(--muted); font-family: var(--mono);
+  font-size: .74rem; padding: 20px; border-top: 1px solid var(--line); }
+
+.hidden { display: none; }
+
+@media (max-width: 620px) { .form, .brand-row { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .barfill { transition: none; } }
