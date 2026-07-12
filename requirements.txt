@@ -4,3 +4,7 @@ python-multipart
 yt-dlp
 faster-whisper
 opencv-python-headless
+
+# Tăng tốc bóc lời bằng GPU NVIDIA (tự dò; máy không có NVIDIA vẫn cài & chạy CPU bình thường).
+nvidia-cublas-cu12
+nvidia-cudnn-cu12

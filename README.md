@@ -12,7 +12,7 @@ Dán link YouTube → AI bóc lời → chọn đoạn hay → cắt clip + tự
 2. **ffmpeg** — máy bạn đã có ✅ (dùng để cắt/ghép video)
 3. Kết nối mạng (để tải video và, lần đầu, tải model bóc lời)
 
-> 💡 Có card đồ họa (GPU) NVIDIA thì bóc lời nhanh hơn nhiều. Không có cũng chạy được (chậm hơn).
+> 💡 Có card đồ họa (GPU) NVIDIA thì **bóc lời VÀ dựng clip (NVENC)** đều nhanh hơn nhiều. Không có cũng chạy được (chậm hơn). Tất cả tự dò, không cần chỉnh gì.
 
 ## Cách chạy (dễ nhất)
 
@@ -43,16 +43,15 @@ uvicorn app.main:app --port 8000
 
 - ✅ Tải video YouTube + **upload file từ máy**
 - ✅ Bóc lời tự động (Whisper, hỗ trợ tiếng Việt)
-- ✅ Chấm điểm & chọn đoạn "dễ viral" (heuristic)
+- ✅ **AI đọc bản bóc lời chọn đoạn viral** — hook 3 giây làm cổng lọc, chấm điểm viral 0-10, phân loại clip (mẹo/quan điểm ngược/quote đắt/nỗi đau…); tự lùi về chấm điểm heuristic khi không có AI
 - ✅ Cắt clip dọc 9:16 nền mờ + **phụ đề động** (chữ đổi màu theo lời nói)
 - ✅ **Chèn logo + nhạc nền** (tuỳ chọn)
-- ✅ **Tự tạo tiêu đề + hashtag** cho mỗi clip (kèm nút Copy caption)
+- ✅ **AI tự viết tiêu đề + caption + hashtag** đúng giọng thương hiệu (kèm nút Copy caption)
 - ✅ Xem & tải clip ngay trên web
 
 ## Sẽ làm tiếp (theo roadmap)
 
 - Ghép intro/outro CTA + xuất sang CapCut
-- Chấm điểm & viết caption bằng LLM (thông minh hơn heuristic)
 - Đẩy lên Lark Base + lên lịch đăng
 - Tự động đăng đa nền tảng (bước khó nhất, để sau)
 
@@ -84,3 +83,5 @@ tao_video_short/
 
 Đổi model bóc lời cho nhanh/chậm: sao chép `.env.example` thành `.env`, sửa `WHISPER_MODEL`
 (ví dụ `tiny` cho nhanh, `medium` cho chính xác hơn).
+
+Dựng clip mặc định dùng **NVENC (GPU)** nếu có, tự lùi CPU nếu không — không cần chỉnh. Muốn ép CPU: đặt `VIDEO_ENCODER=cpu` trong `.env`.

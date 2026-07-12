@@ -102,11 +102,19 @@ def render_clip(video_path: Path, start: float, end: float, ass_path: Path,
     else:
         audio_map = ["-map", "0:a:0?"]
 
-    cmd += ["-filter_complex", ";".join(parts), "-map", vlabel, *audio_map,
-            "-t", f"{duration:.3f}",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-            "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
-            str(out_path)]
+    # Chừa chỗ chèn bộ mã hoá video (NVENC/CPU) giữa head và tail để retry được.
+    head = cmd + ["-filter_complex", ";".join(parts), "-map", vlabel, *audio_map,
+                  "-t", f"{duration:.3f}"]
+    tail = ["-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(out_path)]
 
-    subprocess.run(cmd, check=True, capture_output=True, cwd=str(ass_path.parent))
+    used_nvenc = config.use_nvenc()
+    try:
+        subprocess.run(head + config.video_encoder_args() + tail,
+                       check=True, capture_output=True, cwd=str(ass_path.parent))
+    except subprocess.CalledProcessError:
+        if not used_nvenc:
+            raise  # đã libx264 mà vẫn lỗi → lỗi thật, ném lên
+        # NVENC lỗi lúc encode thật (hiếm) → lùi libx264 rồi thử lại, khỏi hỏng cả buổi
+        subprocess.run(head + config.video_encoder_args(force_cpu=True) + tail,
+                       check=True, capture_output=True, cwd=str(ass_path.parent))
     return out_path

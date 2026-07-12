@@ -10,3 +10,12 @@ models/
 
 # Bí mật
 .env
+
+# File nguồn thô (video/audio đầu vào — không đưa lên git)
+raw/
+*.mp4
+*.mkv
+*.mov
+*.wav
+*.mp3
+*.m4a

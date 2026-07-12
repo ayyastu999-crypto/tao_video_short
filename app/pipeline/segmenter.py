@@ -19,6 +19,11 @@ class Candidate:
     reasons: list[str] = field(default_factory=list)
     ai_title: str = ""      # tiêu đề do AI đặt (nếu chọn bằng AI)
     by_ai: bool = False     # True nếu đoạn này do AI chọn
+    hook_line: str = ""     # câu mở 3 giây đầu (AI trích từ transcript)
+    category: str = ""      # loại clip: tip/quan_diem_nguoc/quote_dat/noi_dau...
+    viral_score: float = 0.0  # điểm viral 0-10 do AI chấm
+    ai_caption: str = ""    # caption bài đăng do AI viết
+    ai_hashtags: list[str] = field(default_factory=list)  # hashtag do AI đặt
 
     @property
     def duration(self) -> float:

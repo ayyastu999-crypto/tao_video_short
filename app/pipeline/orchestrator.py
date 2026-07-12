@@ -98,6 +98,11 @@ def run_job(source: str, num_clips: int, language: str | None,
                 cand.by_ai = True
                 cand.ai_title = seg["title"]
                 cand.reasons = [seg["reason"]] if seg["reason"] else ["AI chọn"]
+                cand.hook_line = seg.get("hook_line", "")
+                cand.category = seg.get("category", "")
+                cand.viral_score = seg.get("viral_score", 0.0)
+                cand.ai_caption = seg.get("caption", "")
+                cand.ai_hashtags = seg.get("hashtags", [])
                 ai_picks.append(cand)
             if ai_picks:
                 picks = ai_picks[:num_clips]
@@ -157,9 +162,12 @@ def run_job(source: str, num_clips: int, language: str | None,
         render_clip(video_path, cand.start, cand.end, ass_path, out_path,
                     logo_path=logo_path, music_path=music_path, face_track=face_track)
 
-        caption = make_caption(cand)
+        caption = make_caption(cand)   # fallback heuristic khi AI không trả caption/hashtag
         clip_title = cand.ai_title or caption["title"]  # AI đặt tên thì ưu tiên
-        cap_text = f"{clip_title}\n\n{' '.join(caption['hashtags'])}".strip()
+        # Ưu tiên caption + hashtag do AI viết; thiếu thì lùi về heuristic
+        hashtags = cand.ai_hashtags or caption["hashtags"]
+        post_caption = cand.ai_caption or clip_title
+        cap_text = f"{post_caption}\n\n{' '.join(hashtags)}".strip()
         (config.OUTPUT_DIR / f"{clip_id}.txt").write_text(cap_text, encoding="utf-8")
 
         clips.append({
@@ -172,9 +180,13 @@ def run_job(source: str, num_clips: int, language: str | None,
             "end": round(cand.end, 1),
             "duration": round(cand.duration, 1),
             "score": cand.score,
+            "viral_score": round(cand.viral_score, 1),
+            "category": cand.category,
+            "hook_line": cand.hook_line,
             "reasons": cand.reasons,
             "title": clip_title,
-            "hashtags": caption["hashtags"],
+            "caption": post_caption,
+            "hashtags": hashtags,
             "text": cand.text[:280],
         })
 

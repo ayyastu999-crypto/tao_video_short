@@ -28,18 +28,14 @@ class Sentence:
 
 @lru_cache(maxsize=1)
 def _load_model(size: str, device: str, compute: str):
+    # Không đặt download_root → dùng cache HuggingFace mặc định (~/.cache/huggingface),
+    # tận dụng model đã tải sẵn (vd large-v3) thay vì tải lại 3GB vào repo.
     from faster_whisper import WhisperModel
     try:
-        return WhisperModel(
-            size, device=device, compute_type=compute,
-            download_root=str(config.MODELS_DIR),
-        )
+        return WhisperModel(size, device=device, compute_type=compute)
     except Exception:
         # GPU/CUDA không sẵn sàng (thiếu cuBLAS…) → tự lùi về CPU cho chắc chạy
-        return WhisperModel(
-            size, device="cpu", compute_type="int8",
-            download_root=str(config.MODELS_DIR),
-        )
+        return WhisperModel(size, device="cpu", compute_type="int8")
 
 
 def extract_audio(video_path: Path, max_seconds: float = 0) -> Path:

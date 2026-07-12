@@ -88,13 +88,20 @@ function renderResults(result) {
   for (const c of result.clips) {
     const enc = encodeURIComponent(c.file);
     const tags = (c.hashtags || []).join(" ");
-    const caption = `${c.title || ""}\n\n${tags}`.trim();
+    // Ưu tiên caption AI viết; thiếu thì lùi về tiêu đề + hashtag
+    const caption = (c.caption ? `${c.caption}\n\n${tags}` : `${c.title || ""}\n\n${tags}`).trim();
     const reasons = (c.reasons || []).map((r) => `<span class="chip">${esc(r)}</span>`).join("");
 
     const isHook = c.kind === "hook";
     const label = (isHook ? "★ HOOK MỒI" : "Clip " + String(c.index).padStart(2, "0"))
       + (c.by_ai ? " 🤖" : "");
-    const scoreBadge = c.by_ai ? "🤖 AI" : "★ " + c.score;
+    // AI có điểm viral → hiện 🔥 x/10; luật cũ → ★ điểm heuristic
+    const scoreBadge = (c.by_ai && c.viral_score)
+      ? "🔥 " + c.viral_score + "/10"
+      : (c.by_ai ? "🤖 AI" : "★ " + c.score);
+    const catChip = c.category ? `<span class="chip cat">${esc(c.category)}</span>` : "";
+    const hookLine = c.hook_line
+      ? `<div class="hookline">🎬 ${esc(c.hook_line)}</div>` : "";
 
     const card = document.createElement("div");
     card.className = "card" + (isHook ? " is-hook" : "");
@@ -107,8 +114,9 @@ function renderResults(result) {
         </div>
         <div class="range">✂️ ${mmss(c.start)} → ${mmss(c.end)} · ${c.duration}s (trong video gốc)</div>
         <div class="title">${esc(c.title || "")}</div>
+        ${hookLine}
         <div class="tags">${esc(tags)}</div>
-        <div class="reasons">${reasons}</div>
+        <div class="reasons">${catChip}${reasons}</div>
       </div>
       <div class="actions">
         <button class="copy" type="button">Copy caption</button>
